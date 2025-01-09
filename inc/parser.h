@@ -5,6 +5,8 @@
 
 typedef enum
 {
+  IK_ROOT,
+  IK_LOOP,
   IK_LESS_THAN,
   IK_GREATER_THAN,
   IK_PLUS,
@@ -15,10 +17,10 @@ typedef enum
 typedef struct _Instruction
 {
   InstructionKind kind;
-  struct Instruction *child;
-  struct Instruction *next;
+  struct _Instruction *child;
+  struct _Instruction *next;
 } Instruction;
 
-extern void parse(Token *token);
+extern Instruction *parse(Token *token);
 
 #endif

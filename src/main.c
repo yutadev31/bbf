@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <tokenaizer.h>
 #include <parser.h>
+#include <inst2bin.h>
 
 #define N 256
 
@@ -43,5 +44,23 @@ int main(int argc, char **argv)
 
   free(code);
 
-  parse(token);
+  Instruction *root = parse(token);
+
+  unsigned char *bin = calloc(1, BIN_SIZE);
+  unsigned char *memory = calloc(1, MEMORY_SIZE);
+  int binIndex = 0;
+  int pointer = 0;
+
+  inst2bin(root, bin, &binIndex, memory, &pointer);
+
+  FILE *output_fp;
+  output_fp = fopen("output.bin", "w");
+  if (output_fp == NULL)
+  {
+    printf("%s file not open!\n", file_name);
+    return 1;
+  }
+
+  fwrite(bin, BIN_SIZE, 1, output_fp);
+  fclose(output_fp);
 }
