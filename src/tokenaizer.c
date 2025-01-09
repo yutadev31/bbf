@@ -53,5 +53,7 @@ Token *tokenize(char *code)
     p++;
   }
 
+  cur = createToken(TK_END, cur);
+
   return first.next;
 }

@@ -10,6 +10,7 @@ typedef enum
   TK_DOT,
   TK_LEFT_BRACKET,
   TK_RIGHT_BRACKET,
+  TK_END,
 } TokenKind;
 
 typedef struct _Token

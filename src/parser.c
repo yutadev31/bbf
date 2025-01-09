@@ -6,7 +6,7 @@ typedef struct
 {
   Token *token;
   Instruction *cur;
-} TokenAndCursor;
+} ParserResult;
 
 Instruction *createInstruction(InstructionKind kind)
 {
@@ -22,16 +22,16 @@ Instruction *createInstructionAndSetNext(InstructionKind kind, Instruction *cur)
   return inst;
 }
 
-extern TokenAndCursor *parseInLoop(Token *token, Instruction *cur);
+extern ParserResult *parseInLoop(Token *token, Instruction *cur);
 
-TokenAndCursor *parseInstruction(Token *token, Instruction *cur)
+ParserResult *parseInstruction(Token *token, Instruction *cur)
 {
   switch (token->kind)
   {
   case TK_RIGHT_BRACKET:
-    exit(1);
+    break;
   case TK_LEFT_BRACKET:
-    TokenAndCursor *tac = parseInLoop(token, cur);
+    ParserResult *tac = parseInLoop(token, cur);
     cur = tac->cur;
     token = tac->token;
     free(tac);
@@ -55,33 +55,36 @@ TokenAndCursor *parseInstruction(Token *token, Instruction *cur)
 
   token = token->next;
 
-  TokenAndCursor *tac = calloc(1, sizeof(TokenAndCursor));
-  tac->cur = cur;
-  tac->token = token;
-  return tac;
+  ParserResult *result = calloc(1, sizeof(ParserResult));
+  result->cur = cur;
+  result->token = token;
+  return result;
 }
 
-TokenAndCursor *parseInLoop(Token *token, Instruction *cur)
+ParserResult *parseInLoop(Token *token, Instruction *cur)
 {
+  token = token->next;
+
   while (token)
   {
     if (token->kind == TK_RIGHT_BRACKET)
     {
+      token = token->next;
       break;
     }
     else
     {
-      TokenAndCursor *tac = parseInstruction(token, cur);
-      cur = tac->cur;
-      token = tac->token;
-      free(tac);
+      ParserResult *result = parseInstruction(token, cur);
+      cur = result->cur;
+      token = result->token;
+      free(result);
     }
   }
 
-  TokenAndCursor *tac = calloc(1, sizeof(TokenAndCursor));
-  tac->cur = cur;
-  tac->token = token;
-  return tac;
+  ParserResult *result = calloc(1, sizeof(ParserResult));
+  result->cur = cur;
+  result->token = token;
+  return result;
 }
 
 Instruction *parse(Token *token)
@@ -92,10 +95,10 @@ Instruction *parse(Token *token)
 
   while (token)
   {
-    TokenAndCursor *tac = parseInstruction(token, cur);
-    cur = tac->cur;
-    token = tac->token;
-    free(tac);
+    ParserResult *result = parseInstruction(token, cur);
+    cur = result->cur;
+    token = result->token;
+    free(result);
   }
 
   root->child = first.next;

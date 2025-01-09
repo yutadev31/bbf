@@ -10,7 +10,7 @@ void inst2bin(Instruction *root, unsigned char *bin, int *binIndex, unsigned cha
     switch (inst->kind)
     {
     case IK_ROOT:
-      exit(1);
+      exit(3);
     case IK_LOOP:
       while (memory[*pointer] != 0)
       {

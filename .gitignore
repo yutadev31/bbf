@@ -2,3 +2,4 @@ build
 bbf
 .vscode/*
 !.vscode/c_cpp_properties.json
+output.bin
